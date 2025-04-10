@@ -24,9 +24,9 @@ repos:
     rev: v0.0.275
     hooks:
     -   id: ruff
-        args:
-        - --fix
+        args: ["--fix", "--line-length=420"]
 -   repo: https://github.com/psf/black
     rev: 23.3.0
     hooks:
     -   id: black
+        args: ["--line-length", "420"]

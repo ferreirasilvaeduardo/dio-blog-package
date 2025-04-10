@@ -6,7 +6,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 def create_app():
-
     from contextlib import asynccontextmanager  # noqa
 
     from fastapi import FastAPI  # noqa
@@ -27,9 +26,7 @@ def create_app():
         yield
         await database.disconnect()  # noqa
 
-    app_create_app = FastAPI(
-        title=settings.APP_NAME, version=settings.APP_VERSION, lifespan=lifespan
-    )
+    app_create_app = FastAPI(title=settings.APP_NAME, version=settings.APP_VERSION, lifespan=lifespan)
     app_create_app.include_router(router_auth)
     app_create_app.include_router(router_post)
 

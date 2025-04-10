@@ -62,13 +62,9 @@ async def decode_jwt(token: str) -> Optional[JWTToken]:
 
 class JWTBearer(HTTPBearer):
     def __init__(self, auto_error: bool = True):
-        super(JWTBearer, self).__init__(auto_error=auto_error)
+        super().__init__(auto_error=auto_error)
 
-    async def __call__(
-        self, request: Request
-    ) -> Optional[
-        HTTPAuthorizationCredentials
-    ]:  # JWTToken:  # | None | Optional[HTTPAuthorizationCredentials] | Any:
+    async def __call__(self, request: Request) -> Optional[HTTPAuthorizationCredentials]:  # JWTToken:  # | None | Optional[HTTPAuthorizationCredentials] | Any:
         authorization = request.headers.get("Authorization", "")
         scheme, _, credentials = authorization.partition(" ")
 
@@ -101,7 +97,5 @@ async def get_current_user(
 
 def login_required(current_user: Annotated[dict[str, int], Depends(get_current_user)]):
     if not current_user:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, detail="Access denied"
-        )
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
     return current_user

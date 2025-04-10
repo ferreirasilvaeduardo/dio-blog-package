@@ -19,9 +19,7 @@ service = PostService()
 
 
 @router.get("/", response_model=list[PostOut])
-async def read_posts(
-    skip: int = 0, limit: Union[int, None] = None, published: bool | None = None
-):
+async def read_posts(skip: int = 0, limit: Union[int, None] = None, published: bool | None = None):
     return await service.read_all(skip=skip, limit=limit, published=published)
 
 
@@ -56,6 +54,4 @@ async def partial_update_post(post_id: int, post: PostUpdateIn):
 async def delete_post(post_id: int):
     await service.delete(post_id=post_id)
 
-    return (
-        status.HTTP_204_NO_CONTENT
-    )  # Retorna um status 204 No Content em caso de sucesso
+    return status.HTTP_204_NO_CONTENT  # Retorna um status 204 No Content em caso de sucesso

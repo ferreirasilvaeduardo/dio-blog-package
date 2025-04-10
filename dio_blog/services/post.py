@@ -21,23 +21,12 @@ class PostService:
 
         if limit is not None:
             if published is not None:
-                query = (
-                    posts.select()
-                    .where(posts.c.published == published)
-                    .limit(limit)
-                    .offset(skip)
-                    .order_by(posts.c.id)
-                )
+                query = posts.select().where(posts.c.published == published).limit(limit).offset(skip).order_by(posts.c.id)
             else:
                 query = posts.select().limit(limit).offset(skip).order_by(posts.c.id)
         else:
             if published is not None:
-                query = (
-                    posts.select()
-                    .where(posts.c.published == published)
-                    .offset(skip)
-                    .order_by(posts.c.id)
-                )
+                query = posts.select().where(posts.c.published == published).offset(skip).order_by(posts.c.id)
             else:
                 query = posts.select().offset(skip).order_by(posts.c.id)
         return await database.fetch_all(query)
@@ -81,9 +70,7 @@ class PostService:
 
         return existing_post_update
 
-    async def partial_update(
-        self, post_id: int, post: PostUpdateIn
-    ) -> Record | None | PostUpdateIn:
+    async def partial_update(self, post_id: int, post: PostUpdateIn) -> Record | None | PostUpdateIn:
         existing_post = await self.__get_by_id(post_id)
         if not existing_post:
             return None
@@ -108,9 +95,7 @@ class PostService:
     async def delete(self, post_id: int):
         existing_post = await self.count(post_id=post_id)
         if not existing_post:
-            raise HTTPException(
-                status_code=status.HTTP_204_NO_CONTENT, detail="Post not found"
-            )
+            raise HTTPException(status_code=status.HTTP_204_NO_CONTENT, detail="Post not found")
 
         delete_query = posts.delete().where(posts.c.id == post_id)
         return await database.execute(delete_query)
@@ -142,9 +127,7 @@ class PostService:
         select_query = posts.select().where(posts.c.id == post_id)
         post = await database.fetch_one(select_query)
         if not post:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Post not found"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
         return post
 
     async def __get_by_title(self, post_title: str) -> Record | None:

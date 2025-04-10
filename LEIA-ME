@@ -51,12 +51,12 @@ Status codes mais comuns:
 
 200 OK: A solicitação foi bem-sucedida.
 201 Created: A solicitação foi bem-sucedida e um novo recurso foi criado.
-204 No Content: A solicitação foi bem-sucedida, mas não há conteúdo para retornar.   
+204 No Content: A solicitação foi bem-sucedida, mas não há conteúdo para retornar.  
 400 Bad Request: A solicitação não pôde ser entendida pelo servidor devido a sintaxe inválida.
 401 Unauthorized: A solicitação requer autenticação.
 403 Forbidden: O cliente não tem permissão para acessar o recurso solicitado.
 404 Not Found: O recurso solicitado não foi encontrado.
-500 Internal Server Error: O servidor encontrou um erro interno e não pôde concluir a solicitação.   
+500 Internal Server Error: O servidor encontrou um erro interno e não pôde concluir a solicitação.  
 Importância dos status codes:
 
 Os status codes são essenciais para a comunicação entre clientes e servidores na web.
@@ -78,12 +78,12 @@ cd /dio/py/ForPytBacDev/10APIsAssincronasEmPythonComFastAPI/
  -> poetry add "pyjwt=*"
  -> poetry add "psycopg2-binary=*"
  -> poetry add "alembic=*"
-  
+
  -> poetry add --group dev 'pytest=*' 'pytest-mock=*' 'flake8=*' 'mypy=*'
  -> poetry add --group dev 'httpx=*'
  -> poetry add --group dev 'ipython=*' 'isort=*' 'black=*' 'autopep8=*' 'pylint=*'
  -> poetry add --group dev 'pytest-asyncio=*'
- -> poetry add --group dev 'pre-commit=*' # ajudar commit 
+ -> poetry add --group dev 'pre-commit=*' # ajudar commit
  ->  poetry add --group dev 'bandit=*'
 
 ativar ambiente virtual
@@ -95,7 +95,7 @@ ativar ambiente virtual
 -- > deactivate : sair do comando virtual do poetry :: https://python-poetry.org/docs/managing-environments/#activating-the-environment
 
  -> poetry env info
- 
+
 ge$ poetry env info
 
 Virtualenv
@@ -113,15 +113,15 @@ Path:       /home/eduardof/.pyenv/versions/3.11.11
 Executable: /home/eduardof/.pyenv/versions/3.11.11/bin/python3.11
 
 
- 
- -> abrir vs code : code. 
- 
- 
+
+ -> abrir vs code : code.
+
+
  -> poetry env activate
- 
- 
- 
- 
+
+
+
+
 |Característica	|PUT									|PATCH
 |Intenção		|Substituir o recurso completamente		|Aplicar modificações parciais ao recurso
 |Dados Enviados	|Representação completa do recurso		|Apenas as alterações a serem aplicadas
