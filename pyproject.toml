@@ -1,26 +1,22 @@
-[project]
+[tool.poetry]
 name = "dio-blog-package"
 version = "0.1.0"
 description = ""
-authors = [
-    {name = "Eduardo da Silva Ferreira",email = "eduardo.s.fereira@gmail.com"}
-]
+authors = ["EDUARDO DA SILVA FERREIRA <eduardo.s.ferreira@gmail.com>"]
 readme = "README.md"
-requires-python = ">=3.11"
-dependencies = [
-    "fastapi",
-    "uvicorn[standard]",
-    "pydantic",
-    "pydantic-settings",
-    "databases[aiosqlite]",
-    "pyjwt",
-    "psycopg2-binary",
-    "alembic"
-]
 
-[tool.poetry]
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "*"
+uvicorn = { extras = ["standard"], version = "^0.34.0" }
+databases = {version = "*", extras = ["aiosqlite", "asyncpg"]}
+pyjwt = "*"
+psycopg2-binary = "*"
+pydantic = "*"
+pydantic-settings = "*"
+alembic = "*"
+
 packages = [{include = "dio_blog_package", from = "dio_blog"}]
-
 
 [tool.poetry.group.dev.dependencies]
 pytest = "*"
@@ -41,5 +37,5 @@ httpx = "*"
 asyncio_mode = "auto"
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
