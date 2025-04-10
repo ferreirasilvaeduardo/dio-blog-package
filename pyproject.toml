@@ -4,7 +4,6 @@ version = "0.1.0"
 description = ""
 authors = ["EDUARDO DA SILVA FERREIRA <eduardo.s.ferreira@gmail.com>"]
 readme = "README.md"
-packages = [{include = "dio_blog_package", from = "dio_blog"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
