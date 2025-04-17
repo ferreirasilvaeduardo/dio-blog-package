@@ -2,9 +2,9 @@ from typing import Union
 
 from fastapi import APIRouter, Depends, status
 
+from dio_blog.schemas.post import PostIn, PostUpdateIn
 from dio_blog.security import login_required
 from dio_blog.services.post import PostService
-from dio_blog.schemas.post import PostIn, PostUpdateIn
 from dio_blog.views.post import PostOut
 
 # https://fastapi.tiangolo.com/tutorial/bigger-applications/#an-example-file-structure

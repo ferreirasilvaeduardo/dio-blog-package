@@ -19,8 +19,6 @@ def create_app():
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
-        from dio_blog.models.post import posts  # noqa
-
         await database.connect()  # noqa
         metadata.create_all(engine)
         yield

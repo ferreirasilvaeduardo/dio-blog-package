@@ -27,12 +27,11 @@ except ImportError:
 
 import asyncio  # Biblioteca padrão do Python para programação assíncrona.
 
-import pytest_asyncio  #  Um plugin do pytest que suporta a execução de testes assíncronos (funções definidas com async def).
-from httpx import (
+import pytest_asyncio  # Um plugin do pytest que suporta a execução de testes assíncronos (funções definidas com async def).
+from httpx import (  # httpx: Uma biblioteca HTTP assíncrona que será usada para fazer requisições HTTP para a aplicação de teste. ASGITransport é usado para interagir diretamente com aplicações ASGI (Asynchronous Server Gateway Interface), como aquelas construídas com frameworks como FastAPI (que provavelmente é o caso de dio_blog). AsyncClient é um cliente HTTP assíncrono fornecido por httpx.
     ASGITransport,
     AsyncClient,
-)  # httpx: Uma biblioteca HTTP assíncrona que será usada para fazer requisições HTTP para a aplicação de teste. ASGITransport é usado para interagir diretamente com aplicações ASGI (Asynchronous Server Gateway Interface), como aquelas construídas com frameworks como FastAPI (que provavelmente é o caso de dio_blog). AsyncClient é um cliente HTTP assíncrono fornecido por httpx.
-
+)
 
 try:
     from dio_blog.config import settings
@@ -50,14 +49,14 @@ async def db(
     request,
 ):  # Define uma função assíncrona chamada db que recebe o objeto request do pytest.
     from dio_blog.database import (
-        database,
+        database,  # noqa # pylint: disable=C0415
         engine,
         metadata,
-    )  # noqa # pylint: disable=C0415
+    )
     from dio_blog.models.post import posts  # noqa  # pylint: disable=C0415
 
     await database.connect()  # Estabelece uma conexão assíncrona com o banco de dados.
-    metadata.create_all(engine)  #  Cria todas as tabelas definidas nos modelos do SQLAlchemy (provavelmente onde posts está definido) no banco de dados.
+    metadata.create_all(engine)  # Cria todas as tabelas definidas nos modelos do SQLAlchemy (provavelmente onde posts está definido) no banco de dados.
 
     #  A função interna teardown() é definida para ser executada após todos os testes que utilizam esta fixture serem concluídos.
     def teardown():
@@ -91,4 +90,4 @@ async def client(db):
 @pytest_asyncio.fixture
 async def access_token(client: AsyncClient):
     response = await client.post("/auth/login", json={"user_id": 1})
-    return response.json()["access_token"]  #  Assume que a resposta da requisição de login é um JSON contendo um campo chamado access_token, que é retornado pela fixture. Essa fixture provavelmente é usada em outros testes que precisam de um token de acesso autenticado.
+    return response.json()["access_token"]  # Assume que a resposta da requisição de login é um JSON contendo um campo chamado access_token, que é retornado pela fixture. Essa fixture provavelmente é usada em outros testes que precisam de um token de acesso autenticado.

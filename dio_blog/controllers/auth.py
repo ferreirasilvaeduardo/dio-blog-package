@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from dio_blog.security import sign_jwt
 from dio_blog.schemas.auth import LoginIn
+from dio_blog.security import sign_jwt
 from dio_blog.views.auth import LoginOut
 
 router = APIRouter(
