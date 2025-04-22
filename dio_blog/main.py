@@ -1,40 +1,118 @@
 import os
 import sys
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 # Adicione o diretório do projeto ao sys.path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+try:
+    from dio_blog.config import settings
+    from dio_blog.controllers import auth, post
+    from dio_blog.database import database, engine, metadata
+    from dio_blog.exceptions import ExistConflictError as ExceptionExistConflictError
+    from dio_blog.exceptions import NotFoundError as ExceptionNotFoundError
+    from dio_blog.exceptions import (
+        UnprocessableContentError as ExceptionUnprocessableContentError,
+    )
+except ImportError:
+    print("ERRO na importação de pacote!!")
+    exit(1)
 
+
+tags_metadata = [
+    {
+        "name": "auth",
+        "description": "Operações para autenticação",
+    },
+    {
+        "name": "post",
+        "description": "Operações para manter posts.",
+        "externalDocs": {
+            "description": "Documentação externa para Posts.api",
+            "url": "https://post-api.com/",
+        },
+    },
+]
+
+servers = [
+    {"url": "http://localhost:8000", "description": "Ambiente de desenvolvimento"},
+    {
+        "url": "https://dio-blog-fastapi.onrender.com",
+        "description": "Ambiente de produção",
+    },
+]
+
+
+# pylint: disable=C0116
 def create_app():
-    from contextlib import asynccontextmanager  # noqa
-
-    from fastapi import FastAPI  # noqa
-
-    from dio_blog.config import settings  # noqa
-    from dio_blog.controllers.auth import router as router_auth  # noqa
-    from dio_blog.controllers.post import router as router_post  # noqa
-    from dio_blog.database import database, engine, metadata  # noqa
-
     # metadata.create_all(engine)
 
+    # pylint: disable=W0621
+    # pylint: disable=W0613
     @asynccontextmanager
-    async def lifespan(app: FastAPI):
+    async def lifespan(app: FastAPI):  # noqa
         await database.connect()  # noqa
         metadata.create_all(engine)
         yield
         await database.disconnect()  # noqa
 
-    app_create_app = FastAPI(title=settings.APP_NAME, version=settings.APP_VERSION, lifespan=lifespan)
-    app_create_app.include_router(router_auth)
-    app_create_app.include_router(router_post)
+    app_create_app = FastAPI(
+        title=settings.APP_NAME,
+        version=settings.APP_VERSION,
+        summary=settings.SUMMARY,
+        description=""" DIO blog API ajuda você a criar seu blog pessoal. 🚀
 
-    # @app_create_app.on_event("startup")
-    # async def startup():
-    #     await database.connect()
+## Posts
 
-    # @app_create_app.on_event("shutdown")
-    # async def shutdown():
-    #     await database.disconnect()
+Você será capaz de fazer:
+
+* **Criar posts**.
+* **Recuperar posts**.
+* **Recuperar posts por ID**.
+* **Atualizar posts**.
+* **Excluir posts**.
+* **Limitar quantidade de posts diários** (_not implemented_).
+                """,
+        openapi_tags=tags_metadata,
+        servers=servers,
+        redoc_url=None,
+        # openapi_url=None, # disable docs
+        lifespan=lifespan,
+    )
+    app_create_app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+    app_create_app.include_router(auth.router, tags=["auth"])
+    app_create_app.include_router(post.router, tags=["post"])
+
+    @app_create_app.exception_handler(ExceptionNotFoundError)
+    async def not_found_post_exception_handler(request: Request, exc: ExceptionNotFoundError):
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={"detail": exc.message},
+        )
+
+    @app_create_app.exception_handler(ExceptionExistConflictError)
+    async def exist_conflict_post_exception_handler(request: Request, exc: ExceptionExistConflictError):
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={"detail": exc.message},
+        )
+
+    @app_create_app.exception_handler(ExceptionUnprocessableContentError)
+    async def unprocessable_content_post_exception_handler(request: Request, exc: ExceptionUnprocessableContentError):
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={"detail": exc.message},
+        )
 
     return app_create_app
 

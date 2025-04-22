@@ -18,6 +18,7 @@ router = APIRouter(
 service = PostService()
 
 
+# pylint: disable=C0116
 @router.get("/", response_model=list[PostOut])
 async def read_posts(skip: int = 0, limit: Union[int, None] = None, published: bool | None = None):
     return await service.read_all(skip=skip, limit=limit, published=published)
@@ -34,12 +35,13 @@ async def create_post(post: PostIn):
     return {
         **post.model_dump(),
         "id": last_record_id,
-    }  # Irá retornar de acordo com postout
+    }
 
 
 @router.put("/{post_id}", response_model=PostOut)
 async def update_post(post_id: int, post: PostIn):
     updated_result = await service.update(post_id=post_id, post=post)
+
     return updated_result
 
 

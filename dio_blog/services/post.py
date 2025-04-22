@@ -1,15 +1,21 @@
 from typing import Union
 
 from databases.interfaces import Record
-from fastapi import HTTPException, status
 from sqlalchemy import func, select
 
 from dio_blog.database import database
+from dio_blog.exceptions import (
+    ExistConflictError,
+    NotFoundError,
+    UnprocessableContentError,
+)
 from dio_blog.models.post import posts
 from dio_blog.schemas.post import PostIn, PostUpdateIn
 
 
+# pylint: disable=C0116
 class PostService:
+    # pylint: disable=C0116
     async def read_all(
         self,
         skip: int = 0,
@@ -17,7 +23,7 @@ class PostService:
         published: bool | None = None,
     ) -> list[Record]:
         if (not skip or skip <= 0) and limit is None and published is None:
-            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
+            raise UnprocessableContentError
 
         if limit is not None:
             if published is not None:
@@ -95,7 +101,7 @@ class PostService:
     async def delete(self, post_id: int):
         existing_post = await self.count(post_id=post_id)
         if not existing_post:
-            raise HTTPException(status_code=status.HTTP_204_NO_CONTENT, detail="Post not found")
+            raise NotFoundError
 
         delete_query = posts.delete().where(posts.c.id == post_id)
         return await database.execute(delete_query)
@@ -127,15 +133,12 @@ class PostService:
         select_query = posts.select().where(posts.c.id == post_id)
         post = await database.fetch_one(select_query)
         if not post:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
+            raise NotFoundError
         return post
 
     async def __get_by_title(self, post_title: str) -> Record | None:
         select_query = posts.select().where(posts.c.title == post_title)
         post = await database.fetch_one(select_query)
         if post:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail=f"Exist title [{str(post_title)}]",
-            )
+            raise ExistConflictError
         return post

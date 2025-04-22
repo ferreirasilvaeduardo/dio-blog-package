@@ -1,5 +1,5 @@
 import time
-from typing import Annotated, Optional  # , Any, Coroutine
+from typing import Annotated, Any, Optional  # , Any, Coroutine
 from uuid import uuid4
 
 import jwt
@@ -64,7 +64,7 @@ class JWTBearer(HTTPBearer):
     def __init__(self, auto_error: bool = True):
         super().__init__(auto_error=auto_error)
 
-    async def __call__(self, request: Request) -> Optional[HTTPAuthorizationCredentials]:  # JWTToken:  # | None | Optional[HTTPAuthorizationCredentials] | Any:
+    async def __call__(self, request: Request) -> Optional[HTTPAuthorizationCredentials | None | Any]:  # JWTToken:  # | None | Optional[HTTPAuthorizationCredentials] | Any:
         authorization = request.headers.get("Authorization", "")
         scheme, _, credentials = authorization.partition(" ")
 
@@ -91,7 +91,7 @@ class JWTBearer(HTTPBearer):
 
 async def get_current_user(
     token: Annotated[JWTToken, Depends(JWTBearer())],
-) -> dict[str, int]:
+) -> dict[str, int] | Any:
     return {"user_id": token.access_token.sub}
 
 

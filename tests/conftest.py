@@ -48,11 +48,8 @@ except ImportError:
 async def db(
     request,
 ):  # Define uma função assíncrona chamada db que recebe o objeto request do pytest.
-    from dio_blog.database import (
-        database,  # noqa # pylint: disable=C0415
-        engine,
-        metadata,
-    )
+    from dio_blog.database import database  # noqa # pylint: disable=C0415
+    from dio_blog.database import engine, metadata
     from dio_blog.models.post import posts  # noqa  # pylint: disable=C0415
 
     await database.connect()  # Estabelece uma conexão assíncrona com o banco de dados.
