@@ -41,7 +41,7 @@ tags_metadata = [
 servers = [
     {"url": "http://localhost:8000", "description": "Ambiente de desenvolvimento"},
     {
-        "url": "https://dio-blog-fastapi.onrender.com",
+        "url": "https://dio-blog-package.onrender.com",
         "description": "Ambiente de produção",
     },
 ]
@@ -90,8 +90,8 @@ Você será capaz de fazer:
         allow_methods=["*"],
         allow_headers=["*"],
     )
-    app_create_app.include_router(auth.router, tags=["auth"])
-    app_create_app.include_router(post.router, tags=["post"])
+    app_create_app.include_router(auth.router)  # , tags=["auth"])
+    app_create_app.include_router(post.router)  # , tags=["post"])
 
     @app_create_app.exception_handler(ExceptionNotFoundError)
     async def not_found_post_exception_handler(request: Request, exc: ExceptionNotFoundError):
